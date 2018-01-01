@@ -63,6 +63,10 @@ namespace BasicCodes
 
             Logger.Log("PostOrder1:");
             tree.PostOrder1();
+            Logger.Log("PostOrder2:");
+            tree.PostOrder2();
+            Logger.Log("PostOrder3:");
+            tree.PostOrder3();
         }
     }
 }

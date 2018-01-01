@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 
 namespace BasicCodes
 {
@@ -174,12 +175,89 @@ namespace BasicCodes
             Logger.Log(node);
         }
 
-        public static void PostOrder2()
+        public static void PostOrder2<T>(this BinaryTree<T> tree)
+        {
+            if (tree.Root == null) return;
+            var stack = new Stack<TreeNodeCounterWrap<T>>();
+            stack.Push(TreeNodeCounterWrap<T>.GetWrap(tree.Root));
+            while (stack.Count > 0)
+            {
+                var node = stack.Peek();
+                if (node.Node == null)
+                {
+                    stack.Pop();
+                    continue;
+                }
+                if (node.VisitCount == 0)
+                {
+                    node.VisitCount++;
+                    stack.Push(TreeNodeCounterWrap<T>.GetWrap(node.Node.LeftChild));
+                }
+                else if (node.VisitCount == 1)
+                {
+                    node.VisitCount++;
+                    stack.Push(TreeNodeCounterWrap<T>.GetWrap(node.Node.RightChild));
+                }
+                else
+                {
+                    stack.Pop();
+                    Logger.Log(node.Node);
+                }
+            }
+        }
+
+        public static void PostOrder3<T>(this BinaryTree<T> tree)
+        {
+            if (tree.Root == null) return;
+            var stack = new Stack<BinaryTree<T>.TreeNode>();
+            var curNode = tree.Root;
+            BinaryTree<T>.TreeNode lastVisitNode = null;
+            while (curNode != null)
+            {
+                stack.Push(curNode);
+                curNode = curNode.LeftChild;
+            }
+            while (stack.Count > 0)
+            {
+                curNode = stack.Pop();
+                if (curNode.RightChild == null || curNode.RightChild == lastVisitNode)
+                {
+                    Logger.Log(curNode);
+                    lastVisitNode = curNode;
+                }
+                else
+                {
+                    stack.Push(curNode);
+                    curNode = curNode.RightChild;
+                    while (curNode != null)
+                    {
+                        stack.Push(curNode);
+                        curNode = curNode.LeftChild;
+                    }
+                }
+            }
+        }
 
         public class TreeNodeWrap<T>
         {
             public BinaryTree<T>.TreeNode Node;
             public bool Visited;
+
+            public static TreeNodeWrap<T> GetWrap(BinaryTree<T>.TreeNode node)
+            {
+                return new TreeNodeWrap<T> {Node = node, Visited = false};
+            }
+        }
+
+        public class TreeNodeCounterWrap<T>
+        {
+            public BinaryTree<T>.TreeNode Node;
+            public int VisitCount;
+
+            public static TreeNodeCounterWrap<T> GetWrap(BinaryTree<T>.TreeNode node)
+            {
+                return new TreeNodeCounterWrap<T> { Node = node, VisitCount = 0 };
+            }
         }
     }
 }
