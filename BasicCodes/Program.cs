@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace BasicCodes
 {
@@ -6,8 +7,7 @@ namespace BasicCodes
     {
         private static void Main(string[] args)
         {
-//            ListTest();
-            TreeTest();
+            TestPicker();
         }
 
         private static void ListTest()
@@ -67,6 +67,18 @@ namespace BasicCodes
             tree.PostOrder2();
             Logger.Log("PostOrder3:");
             tree.PostOrder3();
+        }
+
+        private static void TestPicker()
+        {
+            for (var i = 0; i < 100; i++)
+            {
+                var list = StackPicker.RandomPick(1000, 10, 80, 150);
+                foreach (var item in list)
+                {
+                    Console.WriteLine(item);
+                }
+            }
         }
     }
 }
